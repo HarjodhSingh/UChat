@@ -1,0 +1,89 @@
+<html>
+
+<head>
+    <title>UChat</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="http://localhost/UChat/jquery-3.3.1.min.js"></script>
+    <script src="http://localhost/UChat/search.js"></script>
+    </head>
+
+<body style="padding-top: 80px;">
+    <script>
+        var nick = prompt('What is your desired nickname?');
+    </script>
+
+    <div class="navbar navbar-light bg-light fixed-top">
+        <div>
+            <select class="form-control" id="user_menu">
+                <option class="form-control" value='0'>Users</option>
+            </select>
+        </div>
+        <span id="top" class="navbar-text"></span>
+
+        <!--<img class="img-thumbnail" src="http://localhost/ChatKit/images/Avatar1.jpg" alt="Avatar">-->
+
+        <script>
+            var header = document.createElement("h2");
+            var node = document.createTextNode('Logged in as: '+nick);
+            header.appendChild(node);
+            var element = document.getElementById("top");
+            element.appendChild(header);
+        </script>
+
+        <button type="button" class="btn btn-outline-primary"><a href="http://localhost/UChat/index2.php">Logout</a></button>
+    </div>
+
+    
+    <div class="container mw-100">
+        <div class="row">
+            <div class="col message-bubble">
+                <ul class="list-group list-unstyled m-2" id="messages"></ul>
+            </div>
+        </div>
+        
+        <div class="row fixed-bottom">
+            <div class="col">
+                <form action="">
+                        <input class="w-75 ml-5" id="m" placeholder="Message" autocomplete="off" />
+                        <button id="sendbtn" type="button" class="btn btn-primary">Send</button>
+                </form> 
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            var socket = io();
+            //var nick = prompt('What is your desired username?');
+
+            $('form').submit(function() {
+                socket.emit('chat message', {
+                    nick: nick,
+                    msg: $('#m').val()
+                });
+                $('#m').val('');
+                return false;
+            });
+                socket.on('chat message', function(msg) {
+                //$('#messages').append($('<li>'+ nick).text(msg));
+                if(msg.nick != nick){
+                    $('#messages').append('<li class="list-group-item border border-secondary p-2 m-1 bg-light text-break">' + '<b>' + msg.nick + ' : </b> ' + msg.msg + "</li>");
+                }else{
+                    $('#messages').append('<li class=" list-group-item border border-primary p-2 m-1 text-break float-right">' + '<b>' + msg.nick + ' : </b> ' + msg.msg + "</li>");
+                }
+    
+                window.scrollTo(0, document.body.scrollHeight);
+            });
+
+        });
+
+    </script>
+
+</body>
+
+
+
+</html>
